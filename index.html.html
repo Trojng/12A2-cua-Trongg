@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ký ức Trần Phú - Hoàn Kiếm | 12A2 K63</title>
+    <style>
+        /* Toàn bộ cấu trúc nền dựa trên bức ảnh được cung cấp */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-image: url('background.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Lớp phủ mờ giúp giao diện thơ mộng và dễ đọc chữ hơn */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(3px);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Tiêu đề đồng bộ với chữ trong ảnh gốc */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #ffffff;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7), 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+        }
+
+        /* Khung viết lời thổ lộ */
+        .confession-form-container {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .form-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #4a5568;
+            border-bottom: 2px dashed #cbd5e0;
+            padding-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #4a5568;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+        }
+
+        /* Tùy chọn biểu tượng tương tác */
+        .interaction-selectors {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .selector-item {
+            position: relative;
+        }
+
+        .selector-item input[type="radio"] {
+            display: none;
+        }
+
+        .selector-label {
+            display: block;
+            padding: 10px;
+            text-align: center;
+            background: #edf2f7;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .selector-item input[type="radio"]:checked + .selector-label {
+            background: #ebf8ff;
+            border-color: #3182ce;
+            color: #2b6cb0;
+            font-weight: bold;
+            transform: translateY(-2px);
+        }
+
+        /* Nút gửi */
+        .btn-submit {
+            display: inline-block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+        }
+
+        /* Khu vực hiển thị danh sách các bức thư, lời nhắn */
+        .memory-board {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        /* Style cho từng phong cách hòm thư được chọn */
+        .memory-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            border-left: 6px solid #667eea;
+        }
+
+        /* Thay đổi giao diện nhẹ dựa theo biểu tượng người viết chọn */
+        .memory-card.style-book { border-left-color: #dd6b20; background: #fffaf0; }
+        .memory-card.style-student { border-left-color: #3182ce; background: #ebf8ff; }
+        .memory-card.style-class { border-left-color: #38a169; background: #f0fff4; }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #edf2f7;
+            padding-bottom: 10px;
+        }
+
+        .sender-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sender-badge {
+            font-size: 1.5rem;
+        }
+
+        .sender-name {
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .card-time {
+            font-size: 0.8rem;
+            color: #a0aec0;
+        }
+
+        .card-body {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #4a5568;
+            white-space: pre-line;
+            margin-bottom: 15px;
+        }
+
+        /* File đính kèm bên trong lời nhắn */
+        .attached-media {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .attached-image {
+            max-width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .attached-audio {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>ký ức Trần Phú - Hoàn Kiếm</h1>
+            <p>12A2 K63</p>
+        </header>
+
+        <div class="confession-form-container">
+            <div class="form-title">✨ Gửi lại một chút thanh xuân...</div>
+            <form id="confessionForm">
+                <div class="form-group">
+                    <label for="senderName">Tên hoặc Biệt danh của bạn</label>
+                    <input type="text" id="senderName" class="form-control" placeholder="Để ẩn danh nếu bạn ngại nhé..." required>
+                </div>
+
+                <div class="form-group">
+                    <label>Chọn biểu tượng lời nhắn (Thay đổi giao diện bức thư)</label>
+                    <div class="interaction-selectors">
+                        <div class="selector-item">
+                            <input type="radio" id="typeDefault" name="interactionType" value="default" checked>
+                            <label for="typeDefault" class="selector-label">✉️ Thư tay</label>
+                        </div>
+                        <div class="selector-item">
+                            <input type="radio" id="typeBook" name="interactionType" value="book">
+                            <label for="typeBook" class="selector-label">📘 Quyển sách</label>
+                        </div>
+                        <div class="selector-item">
+                            <input type="radio" id="typeStudent" name="interactionType" value="student">
+                            <label for="typeStudent" class="selector-label">🎓 Học sinh</label>
+                        </div>
+                        <div class="selector-item">
+                            <input type="radio" id="typeClass" name="interactionType" value="class">
+                            <label for="typeClass" class="selector-label">🏫 Lớp học</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="messageText">Tâm tư, lời thổ lộ muốn nhắn gửi</label>
+                    <textarea id="messageText" class="form-control" rows="5" placeholder="Viết những suy nghĩ, kỷ niệm rực rỡ nhất về những ngày tháng dưới mái trường Trần Phú tại đây..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="imageAttachment">Đính kèm hình ảnh kỷ niệm (nếu có)</label>
+                    <input type="file" id="imageAttachment" class="form-control" accept="image/*">
+                </div>
+
+                <div class="form-group">
+                    <label for="audioAttachment">Đính kèm file âm thanh / Voice ghi âm (nếu có)</label>
+                    <input type="file" id="audioAttachment" class="form-control" accept="audio/*">
+                </div>
+
+                <button type="submit" class="btn-submit">Gửi Ký Ức Vào Lưu Bút</button>
+            </form>
+        </div>
+
+        <div class="memory-board" id="memoryBoard"></div>
+    </div>
+
+    <script>
+        document.getElementById('confessionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Lấy dữ liệu từ form
+            const name = document.getElementById('senderName').value;
+            const text = document.getElementById('messageText').value;
+            const type = document.querySelector('input[name="interactionType"]:checked').value;
+            const imageFile = document.getElementById('imageAttachment').files[0];
+            const audioFile = document.getElementById('audioAttachment').files[0];
+            
+            const currentTime = new Date().toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
+
+            // Xác định icon đại diện
+            let badge = "✉️";
+            if (type === "book") badge = "📘";
+            if (type === "student") badge = "🎓";
+            if (type === "class") badge = "🏫";
+
+            // Tạo khung thẻ nhớ
+            const card = document.createElement('div');
+            card.className = `memory-card style-${type}`;
+
+            // Xây dựng phần HTML cơ bản
+            let cardHTML = `
+                <div class="card-header">
+                    <div class="sender-info">
+                        <span class="sender-badge">${badge}</span>
+                        <span class="sender-name">${name}</span>
+                    </div>
+                    <div class="card-time">${currentTime}</div>
+                </div>
+                <div class="card-body">${text}</div>
+                <div class="attached-media" id="mediaContainer"></div>
+            `;
+            
+            card.innerHTML = cardHTML;
+            const board = document.getElementById('memoryBoard');
+            // Đưa lời nhắn mới lên đầu bảng
+            board.insertBefore(card, board.firstChild);
+
+            // Xử lý đọc file ảnh / audio nếu có và hiển thị ngay lập tức
+            const mediaContainer = card.querySelector('#mediaContainer');
+
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.className = 'attached-image';
+                    mediaContainer.appendChild(img);
+                };
+                reader.readAsDataURL(imageFile);
+            }
+
+            if (audioFile) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const audio = document.createElement('audio');
+                    audio.src = event.target.result;
+                    audio.controls = true;
+                    audio.className = 'attached-audio';
+                    mediaContainer.appendChild(audio);
+                };
+                reader.readAsDataURL(audioFile);
+            }
+
+            // Reset form sau khi gửi thành công
+            document.getElementById('confessionForm').reset();
+        });
+    </script>
+</body>
+</html>
